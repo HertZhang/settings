@@ -10,7 +10,7 @@
 #include <QVBoxLayout>
 
 #ifdef DEVICE_EVB
-int wlan_bottom_margin = 500;
+int wlan_bottom_margin = 50;
 #else
 int wlan_bottom_margin = 80;
 #endif
