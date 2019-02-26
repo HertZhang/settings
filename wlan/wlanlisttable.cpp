@@ -96,6 +96,8 @@ void WlanListTable::insertIntoTable(const QString &ssid, const QString &bssid, i
         auth = "WPA2_PSK";
     else if (flags.indexOf("[WPA-PSK") >= 0)
         auth = "WPA_PSK";
+    else if (flags.indexOf("[WEP") >= 0)
+        auth = "WEP";
     else
         auth = "OPEN";
 
@@ -103,6 +105,7 @@ void WlanListTable::insertIntoTable(const QString &ssid, const QString &bssid, i
         setItem(rowcount, COLUME_LOCK_STATE, new QTableWidgetItem(QIcon(QPixmap(":/image/setting/ic_wifi_unlocked.png")), NULL));
     else
         setItem(rowcount, COLUME_LOCK_STATE, new QTableWidgetItem(QIcon(QPixmap(":/image/setting/ic_wifi_locked.png")), NULL));
+    item(rowcount, COLUME_LOCK_STATE)->setData(Qt::DisplayRole, auth);
 
     sortTable();
 }
@@ -171,6 +174,11 @@ void WlanListTable::setItemState(int itemRow, int itemState)
 int WlanListTable::getItemNetworkId(int itemRow)
 {
     return this->item(itemRow, COLUME_SIGNAL)->whatsThis().toInt();
+}
+
+QString WlanListTable::getItemAuth(int itemRow)
+{
+    return this->item(itemRow, COLUME_LOCK_STATE)->data(Qt::DisplayRole).toString();
 }
 
 QString WlanListTable::getItemSignalString(int itemRow)

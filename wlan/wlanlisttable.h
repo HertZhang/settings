@@ -27,6 +27,7 @@ public:
     WifiState getItemState(int itemRow);
     int getItemNetworkId(int itemRow);
     void setItemState(int itemRow, int itemState);
+    QString getItemAuth(int itemRow);
     QString getItemSignalString(int itemRow);
 
     bool hasSSIDName(const QString &ssidName);

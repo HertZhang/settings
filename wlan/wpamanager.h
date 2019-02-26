@@ -41,7 +41,8 @@ public:
     int openCtrlConnection(const char *ifname);
     virtual int setNetworkParam(int id, const char *field,
                                 const char *value, bool quote);
-    void connectNetwork(const QString &ssid, const QString &password);
+    void connectNetwork(const QString &ssid, const QString &password,
+                        const QString &auth);
     virtual void selectNetwork(const QString &sel);
     void removeNetwork(int networkId);
 

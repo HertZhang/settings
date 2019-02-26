@@ -154,15 +154,20 @@ void WlanMainWidget::slot_onTableItemClick(int row, int)
 {
     WifiState itemState = m_table->getItemState(row);
     QString itemSSID = m_table->getItemSSID(row);
+    QString itemAuth = m_table->getItemAuth(row);
+    int itemLocked = !itemAuth.isEmpty() && !(itemAuth == "OPEN");
 
-    if (itemState == WIFI_STATE_NULL) {
+    if (itemState == WIFI_STATE_NULL && !itemLocked) {
+        // supplicant add_network and setlect_network
+        m_manager->connectNetwork(itemSSID, QString(), m_table->getItemAuth(row));
+    } else if (itemState == WIFI_STATE_NULL) {
         NetConnectDialog *dialog = new NetConnectDialog(this);
         dialog->setWifiName(itemSSID);
 
         int result = dialog->exec();
         if (result == NetConnectDialog::RESULT_CONNECT) {
             // supplicant add_network and setlect_network
-            m_manager->connectNetwork(itemSSID, dialog->getEditText());
+            m_manager->connectNetwork(itemSSID, dialog->getEditText(), m_table->getItemAuth(row));
         }
     } else if (itemState == WIFI_STATE_CONNECTED) {
         int result = NetConnectedInfoDialog::showDialog(this, itemSSID, m_table->getItemSignalString(row));

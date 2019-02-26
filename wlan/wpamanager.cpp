@@ -428,7 +428,8 @@ void WPAManager::selectNetwork(const QString &sel)
     scan();
 }
 
-void WPAManager::connectNetwork(const QString &ssid, const QString &password)
+void WPAManager::connectNetwork(const QString &ssid, const QString &password,
+                                const QString &auth)
 {
     char reply[10], cmd[256];
     size_t reply_len;
@@ -446,7 +447,18 @@ void WPAManager::connectNetwork(const QString &ssid, const QString &password)
     id = atoi(reply);
 
     setNetworkParam(id, "ssid", ssid.toLocal8Bit().constData(), true);
-    setNetworkParam(id, "psk", password.toLocal8Bit().constData(), true);
+
+    if (auth.isEmpty() || auth == "OPEN" || auth == "WEP") {
+        setNetworkParam(id, "key_mgmt", "NONE", false);
+
+        if (auth == "WEP")
+            setNetworkParam(id, "wep_key0",
+                            password.toLocal8Bit().constData(), false);
+    } else if (auth.endsWith("PSK")) {
+        setNetworkParam(id, "psk", password.toLocal8Bit().constData(), true);
+    } else {
+        //TODO: EAP
+    }
 
     selectNetwork(QString::number(id, 10));
 
