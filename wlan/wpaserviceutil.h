@@ -197,13 +197,7 @@ inline int wifi_start_hostapd()
 
     console_run("ifconfig wlan0 up");
     console_run("ifconfig wlan0 192.168.100.1 netmask 255.255.255.0");
-    console_run("echo 1 > /proc/sys/net/ipv4/ip_forward");
-    console_run("iptables --flush");
-    console_run("iptables --table nat --flush");
-    console_run("iptables --delete-chain");
-    console_run("iptables --table nat --delete-chain");
-    console_run("iptables --table nat --append POSTROUTING --out-interface eth0 -j MASQUERADE");
-    console_run("iptables --append FORWARD --in-interface wlan0 -j ACCEPT");
+    console_run("route add default gw 192.168.100.1 wlan0");
     memset(cmd, 0, sizeof(cmd));
     sprintf(cmd,"/usr/sbin/hostapd %s -B", HOSTAPD_CONF_DIR);
     detached_run(cmd);
