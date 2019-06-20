@@ -51,6 +51,7 @@ public:
 
     void closeWPAConnection();
     void startWPAConnection();
+    char *spec_char_convers(const char *buf, char *dst);
 
 private:
     static WPAManager *_instance;

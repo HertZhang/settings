@@ -20,7 +20,7 @@ class WlanListTable : public BaseTableWidget
 public:
     WlanListTable(QWidget *parent = 0);
     void insertIntoTable(const QString &ssid, const QString &bssid, int netWorkId,
-                         const QString &signal, const QString &flags, WifiState state);
+                         const QString &signal, const QString &flags, WifiState state, const QString &freq);
 
     QString getItemSSID(int itemRow);
     QString getItemBSSID(int itemRow);
@@ -29,6 +29,7 @@ public:
     void setItemState(int itemRow, int itemState);
     QString getItemAuth(int itemRow);
     QString getItemSignalString(int itemRow);
+    QString getItemFreqString(int itemRow);
 
     bool hasSSIDName(const QString &ssidName);
     void clearTable();

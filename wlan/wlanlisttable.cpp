@@ -18,6 +18,7 @@ int wlan_item_height = 35;
 #define COLUME_STATE 2
 #define COLUME_SIGNAL 3
 #define COLUME_LOCK_STATE 4
+#define COLUME_FREQ 5
 
 WifiStateItem::WifiStateItem(const QString &text) : QTableWidgetItem(text)
 {
@@ -51,13 +52,14 @@ void WlanListTable::init()
     insertColumn(2);
     insertColumn(3);
     insertColumn(4);
+    insertColumn(5);
 
     this->setIconSize(QSize(27, 27));
     verticalHeader()->setDefaultSectionSize(wlan_item_height);
 }
 
 void WlanListTable::insertIntoTable(const QString &ssid, const QString &bssid, int netWorkId,
-                                    const QString &signal, const QString &flags, WifiState state)
+                                    const QString &signal, const QString &flags, WifiState state, const QString &freq)
 {
     int rowcount = rowCount();
     insertRow(rowcount);
@@ -106,6 +108,10 @@ void WlanListTable::insertIntoTable(const QString &ssid, const QString &bssid, i
     else
         setItem(rowcount, COLUME_LOCK_STATE, new QTableWidgetItem(QIcon(QPixmap(":/image/setting/ic_wifi_locked.png")), NULL));
     item(rowcount, COLUME_LOCK_STATE)->setData(Qt::DisplayRole, auth);
+
+    setItem(rowcount, COLUME_FREQ, new QTableWidgetItem(freq));
+    item(rowcount, COLUME_FREQ)->setTextAlignment(Qt::AlignVCenter|Qt::AlignLeft);
+    item(rowcount, COLUME_FREQ)->setWhatsThis(freq);
 
     sortTable();
 }
@@ -161,6 +167,7 @@ void WlanListTable::setItemState(int itemRow, int itemState)
         setItem(itemRow, COLUME_STATE, new WifiStateItem(QString(str_wifi_item_connecting)));
         break;
     case WIFI_STATE_CONNECTED:
+        qDebug("WLAN: setItemState COLUME_STATE itemRow: %d, %s", itemRow, str_wifi_item_connected.toLocal8Bit().data());
         setItem(itemRow, COLUME_STATE, new WifiStateItem(QString(str_wifi_item_connected)));
         break;
     default:
@@ -194,6 +201,13 @@ QString WlanListTable::getItemSignalString(int itemRow)
     else
         return QString(str_wifi_signal_weak);
 }
+
+QString WlanListTable::getItemFreqString(int itemRow)
+{
+    //return this->item(itemRow, COLUME_FREQ)->whatsThis().toInt();
+    return QString(this->item(itemRow, COLUME_FREQ)->whatsThis());
+}
+
 
 bool WlanListTable::hasSSIDName(const QString &ssidName)
 {
