@@ -62,7 +62,7 @@ void WlanMainWidget::initData()
 
 /* TODO: we shoud need set it for fullscreen mode */ 
 #ifdef DEVICE_EVB
-    QKeyBoard::getInstance()->globalInit(QKeyBoard::Black, 40, 6);
+    QKeyBoard::getInstance()->globalInit(QKeyBoard::Black, 50, 30);
 #else
     QKeyBoard::getInstance()->globalInit(QKeyBoard::Black, 45, 16);
 #endif
