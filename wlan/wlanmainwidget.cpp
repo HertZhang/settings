@@ -7,6 +7,7 @@
 #include "constant.h"
 #include "qkeyboard.h"
 
+#include <QtWidgets>
 #include <QVBoxLayout>
 
 #ifdef DEVICE_EVB
@@ -58,14 +59,12 @@ WlanMainWidget::WlanMainWidget(QWidget *parent) : BaseWidget(parent)
 void WlanMainWidget::initData()
 {
     creat_supplicant_file();
-    m_manager = WPAManager::getInstance(this);
+    QDesktopWidget *desktopwidget = QApplication::desktop();
+    QRect desktoprect = desktopwidget->availableGeometry();
+    int base = qMin(desktoprect.width(), desktoprect.height());
 
-/* TODO: we shoud need set it for fullscreen mode */ 
-#ifdef DEVICE_EVB
-    QKeyBoard::getInstance()->globalInit(QKeyBoard::Black, 50, 30);
-#else
-    QKeyBoard::getInstance()->globalInit(QKeyBoard::Black, 45, 16);
-#endif
+    m_manager = WPAManager::getInstance(this);
+    QKeyBoard::getInstance()->globalInit(QKeyBoard::Black, 60, base / desktopwidget->physicalDpiX());
 }
 
 void WlanMainWidget::initLayout()
