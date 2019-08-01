@@ -31,7 +31,7 @@ bool WifiStateItem::operator <(const QTableWidgetItem &other) const
 
     if (state == WIFI_STATE_CONNECTED || state == WIFI_STATE_CONNECTING) {
         return false;
-    }  else if (state == WIFI_STATE_SAVED || this->text() == WIFI_STATE_AUTH_FAILED) {
+    }  else if (state == WIFI_STATE_SAVED || state == WIFI_STATE_AUTH_FAILED) {
         if (otherState == WIFI_STATE_CONNECTED || otherState == WIFI_STATE_CONNECTING)
             return true;
         else
