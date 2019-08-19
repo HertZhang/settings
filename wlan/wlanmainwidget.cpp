@@ -64,7 +64,7 @@ void WlanMainWidget::initData()
     int base = qMin(desktoprect.width(), desktoprect.height());
 
     m_manager = WPAManager::getInstance(this);
-    QKeyBoard::getInstance()->globalInit(QKeyBoard::Black, 60, base / desktopwidget->physicalDpiX());
+    QKeyBoard::getInstance()->globalInit(QKeyBoard::Black, base / 17, (base * 3) / (17 * 4));
 }
 
 void WlanMainWidget::initLayout()
