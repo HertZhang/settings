@@ -230,19 +230,6 @@ void WlanListTable::resetConnnectingItem()
 
 void WlanListTable::resizeEvent(QResizeEvent *event)
 {
-#ifdef DEVICE_EVB
     QTableWidget::resizeEvent(event);
-    horizontalHeader()->resizeSection(0, 20);
-    horizontalHeader()->resizeSection(1, width() - 400);
-    horizontalHeader()->resizeSection(2, 300);
-    horizontalHeader()->resizeSection(3, 30);
-    horizontalHeader()->resizeSection(4, 50);
-#else
-    QTableWidget::resizeEvent(event);
-    horizontalHeader()->resizeSection(0, 20);
-    horizontalHeader()->resizeSection(1, width() - 200);
-    horizontalHeader()->resizeSection(2, 100);
-    horizontalHeader()->resizeSection(3, 30);
-    horizontalHeader()->resizeSection(4, 50);
-#endif
+    horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
 }
