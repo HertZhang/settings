@@ -121,18 +121,6 @@ QString BluetoothDeviceTable::getItemAddress(int row)
 
 void BluetoothDeviceTable::resizeEvent(QResizeEvent *event)
 {
-#ifdef DEVICE_EVB
-    horizontalHeader()->resizeSection(0, 20);
-    horizontalHeader()->resizeSection(1, 50);
-    horizontalHeader()->resizeSection(2, this->width() - 520);
-    horizontalHeader()->resizeSection(3, 300);
-    horizontalHeader()->resizeSection(4, 150);
-#else
-    horizontalHeader()->resizeSection(0, 20);
-    horizontalHeader()->resizeSection(1, 20);
-    horizontalHeader()->resizeSection(2, this->width() - 380);
-    horizontalHeader()->resizeSection(3, 220);
-    horizontalHeader()->resizeSection(4, 120);
-#endif
+    horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
     QTableWidget::resizeEvent(event);
 }
