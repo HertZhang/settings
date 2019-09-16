@@ -42,23 +42,20 @@ MainWindow::MainWindow(QWidget *parent)
     hlayout->addWidget(&title);
     hlayout->addWidget(&subTitle);
     hlayout->addWidget(&toggleBtn);
-    subTitle.setFont(font);
     subTitle.setVisible(false);
     toggleBtn.setFont(font);
     toggleBtn.setVisible(false);
 
-    QFont f;
-    f.setPixelSize(availableGeometry.height()/10);
 //    QListWidgetItem *audio = new QListWidgetItem(tr("Audio"), &listWidget);
-//    audio->setFont(f);
+//    audio->setFont(font);
     QListWidgetItem *wifi = new QListWidgetItem(tr("WiFi"), &listWidget);
-    wifi->setFont(f);
+    wifi->setFont(font);
     QListWidgetItem *bt = new QListWidgetItem(tr("BT"), &listWidget);
-    bt->setFont(f);
+    bt->setFont(font);
     QListWidgetItem *update = new QListWidgetItem(tr("Update"), &listWidget);
-    update->setFont(f);
+    update->setFont(font);
     QListWidgetItem *factory = new QListWidgetItem(tr("Factory Reset"), &listWidget);
-    factory->setFont(f);
+    factory->setFont(font);
     listWidget.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     listWidget.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 

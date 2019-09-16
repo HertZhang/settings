@@ -13,9 +13,9 @@ qtFactoryReset::qtFactoryReset(QWidget *parent)
     const QRect availableGeometry = QApplication::desktop()->availableGeometry(parent);
     QFont font;
     font.setBold(true);
-    font.setPixelSize(availableGeometry.height()/20);
+    font.setPixelSize(availableGeometry.height()/40);
     label.setFont(font);
-    label.setText("Factory Reset will wipe all the user data.\n Make sure your device are ready and then click OK button.");
+    label.setText("Factory Reset will wipe all the user data.\n Make sure your device are ready.\n then click OK button.");
     label.setAlignment(Qt::AlignCenter);
     btn.setText("O K");
     connect(&btn, SIGNAL(clicked(bool)), this, SLOT(on_btnClicked()));

@@ -21,7 +21,7 @@ qtUpdate::qtUpdate(QWidget *parent)
     s.append("\n then click OK button.");
     QFont font;
     font.setBold(true);
-    font.setPixelSize(availableGeometry.height()/20);
+    font.setPixelSize(availableGeometry.height()/40);
     label.setFont(font);
     label.setText(s);
     label.setAlignment(Qt::AlignCenter);
