@@ -52,6 +52,7 @@ qtWifi::qtWifi(QWidget *parent, QLabel *label, QPushButton *btn, bool on): cnt(0
 qtWifi::~qtWifi()
 {
     findTimer.stop();
+    updateTimer.stop();
     QKeyBoard *qkb = QKeyBoard::getInstance();
     delete qkb;
     inputDialog *dialog = inputDialog::getInstance(this);
@@ -94,10 +95,12 @@ void qtWifi::turnOn()
 
 void qtWifi::turnOff()
 {
-    QProcess p;
-    p.start("ifconfig wlan0 down");
-    p.waitForStarted();
-    p.waitForFinished();
+    if(QFile::exists("/userdata")){
+        QProcess p;
+        p.start("ifconfig wlan0 down");
+        p.waitForStarted();
+        p.waitForFinished();
+    }
     clear();
 }
 
@@ -182,10 +185,11 @@ void qtWifi::on_itemClicked(QListWidgetItem *item)
         QProcess p;
         QStringList arguments;
 
-
         QString ss = "wifi_start.sh " + item->text() + " " + str;
         qDebug() << ss;
         p.start(ss);
+//        arguments << "-c" << "wifi_start.sh " + item->text() + " " + str;
+//        p.start("sh", arguments);
         p.waitForStarted();
         p.waitForFinished();
     }
