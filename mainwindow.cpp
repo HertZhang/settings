@@ -161,7 +161,7 @@ void MainWindow::on_itemClicked(QListWidgetItem *item)
         stack.addWidget(wifi);
         stack.setCurrentIndex(stack.indexOf(wifi));
     } else if(! item->text().compare("BT")){
-        bt = new qtBT(this);
+        bt = new qtBT(this, &subTitle, &toggleBtn, isBtOn);
         stack.addWidget(bt);
         stack.setCurrentIndex(stack.indexOf(bt));
     } else if(! item->text().compare("Update")){
@@ -193,6 +193,7 @@ void MainWindow::on_returnClicked()
             wifi = nullptr;
         }else if(bt){
             stack.removeWidget(bt);
+            isBtOn = bt->isOn();
             delete bt;
             bt = nullptr;
         }else if(update){
