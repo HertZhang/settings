@@ -160,9 +160,9 @@ inline int wifi_start_supplicant()
 {
     char cmd[256];
 
-    if (is_supplicant_running()) {
-        return 0;
-    }
+    //if (is_supplicant_running()) {
+      //  return 0;
+   // }
 
     memset(cmd, 0, sizeof(cmd));
     sprintf(cmd, "/usr/sbin/wpa_supplicant -Dnl80211 -iwlan0 -c %s &", WPA_SUPPLICANT_CONF_DIR);
@@ -176,6 +176,7 @@ inline int wifi_stop_supplicant()
     int pid;
     char *cmd = NULL;
 
+    return 0;
     /* Check whether supplicant already stopped */
     if (!is_supplicant_running())
         return 0;

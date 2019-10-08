@@ -1,0 +1,23 @@
+#!/bin/sh
+#
+# Start settings with wifibt...
+#
+
+case "$1" in
+  start)
+		printf "Starting settings wifibt: "
+		#wifibt
+		/usr/sbin/wpa_supplicant -Dnl80211 -iwlan0 -c /etc/wpa_supplicant.conf &
+		/usr/libexec/bluetooth/bluetoothd --compat &
+	;;
+  stop)
+		killall bluetoothd
+		killall wpa_supplicant
+		printf "stop finished"
+        ;;
+  *)
+        echo "Usage: $0 {start|stop}"
+        exit 1
+        ;;
+esac
+exit 0
