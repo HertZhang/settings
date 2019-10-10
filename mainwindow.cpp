@@ -30,9 +30,8 @@ MainWindow::MainWindow(QWidget *parent)
     returnBtn.setFixedSize(pixmap.width(), pixmap.height());
 
     QFont font;
-    font.setPixelSize(availableGeometry.height()/20);
-
     title.setText("Setting");
+    font.setPixelSize(availableGeometry.height()/20);
     title.setFont(font);
     title.setAlignment(Qt::AlignLeft);
 
@@ -42,12 +41,14 @@ MainWindow::MainWindow(QWidget *parent)
     hlayout->addWidget(&title);
     hlayout->addWidget(&subTitle);
     hlayout->addWidget(&toggleBtn);
+    font.setPixelSize(12);
     subTitle.setFont(font);
     subTitle.setAlignment(Qt::AlignCenter);
     subTitle.setVisible(false);
     toggleBtn.setFont(font);
     toggleBtn.setVisible(false);
 
+    font.setPixelSize(availableGeometry.height()/20);
 //    QListWidgetItem *audio = new QListWidgetItem(tr("Audio"), &listWidget);
 //    audio->setFont(font);
     QListWidgetItem *wifi = new QListWidgetItem(tr("WiFi"), &listWidget);

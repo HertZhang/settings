@@ -17,11 +17,6 @@ qtWifi::qtWifi(QWidget *parent, QLabel *label, QPushButton *btn, bool on): cnt(0
     QFont font;
     font.setPixelSize(availableGeometry.height()/20);
 
-    if(label){
-        text = label;
-        updateConnectState();
-        text->setVisible(true);
-    }
     if(btn){
         switchBtn = btn;
         switchBtn->setCheckable(true);
@@ -36,6 +31,12 @@ qtWifi::qtWifi(QWidget *parent, QLabel *label, QPushButton *btn, bool on): cnt(0
             switchBtn->setText("off");
         }
         connect(switchBtn, SIGNAL(clicked(bool)), this, SLOT(on_btnClicked()));
+    }
+
+    if(label){
+        text = label;
+        updateConnectState();
+        text->setVisible(true);
     }
     setObjectName("WiFi");
     setFont(font);
