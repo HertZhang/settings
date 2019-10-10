@@ -132,7 +132,11 @@ void qtWifi::updateConnectState()
     if(found){
         text->setText(ssid + " Connected");
     }else {
-        text->setText("No Wifi Connected");
+        if(isOn()){
+            text->setText("Scaning");
+        }else {
+            text->setText("No Wifi Connected");
+        }
     }
 }
 

@@ -14,27 +14,7 @@
 class btScanThread : public QThread
 {
     Q_OBJECT
-    void run() {
-        QProcess p;
-        while(1){
-            p.start("hcitool scan");
-            p.waitForStarted();
-            p.waitForFinished();
-            QTextStream result(p.readAllStandardOutput());
-            QString line;
-            QStringList list, sl;
-            do{
-                line = result.readLine();
-                if(line.compare("Scanning ...")){
-                    sl = line.split("\t");
-                    if(sl.count() > 2 ){
-                        list << sl.at(2);
-                    }
-                }
-            }while (! line.isNull());
-            emit resultReady(list);
-        }
-    }
+    void run();
 signals:
     void resultReady(const QStringList &s);
 };

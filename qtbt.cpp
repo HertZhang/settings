@@ -13,11 +13,6 @@ qtBT::qtBT(QWidget *parent, QLabel *label, QPushButton *btn, bool on)
     QFont font;
     font.setPixelSize(availableGeometry.height()/20);
 
-    if(label){
-        text = label;
-        updateConnectState();
-        text->setVisible(true);
-    }
     if(btn){
         switchBtn = btn;
         switchBtn->setCheckable(true);
@@ -32,6 +27,12 @@ qtBT::qtBT(QWidget *parent, QLabel *label, QPushButton *btn, bool on)
             switchBtn->setText("off");
         }
         connect(switchBtn, SIGNAL(clicked(bool)), this, SLOT(on_btnClicked()));
+    }
+
+    if(label){
+        text = label;
+        text->setVisible(true);
+        updateConnectState();
     }
     setObjectName("BT");
     setFont(font);
@@ -105,7 +106,9 @@ void qtBT::turnOff()
 
 void qtBT::updateConnectState()
 {
-
+    if(isOn()){
+        text->setText("Scaning");
+    }
 }
 
 void qtBT::on_btnClicked()
@@ -131,4 +134,26 @@ void qtBT::handleResults(const QStringList &list)
     clear();
     addItems(list);
     updateConnectState();
+}
+
+void btScanThread::run() {
+    QProcess p;
+    while(1){
+        p.start("hcitool scan");
+        p.waitForStarted();
+        p.waitForFinished();
+        QTextStream result(p.readAllStandardOutput());
+        QString line;
+        QStringList list, sl;
+        do{
+            line = result.readLine();
+            if(line.compare("Scanning ...")){
+                sl = line.split("\t");
+                if(sl.count() > 2 ){
+                    list << sl.at(2);
+                }
+            }
+        }while (! line.isNull());
+        emit resultReady(list);
+    }
 }
