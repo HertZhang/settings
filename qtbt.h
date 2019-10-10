@@ -32,7 +32,6 @@ class btScanThread : public QThread
                     }
                 }
             }while (! line.isNull());
-            /* expensive or blocking operation  */
             emit resultReady(list);
         }
     }

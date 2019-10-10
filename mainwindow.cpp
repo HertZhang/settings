@@ -42,6 +42,8 @@ MainWindow::MainWindow(QWidget *parent)
     hlayout->addWidget(&title);
     hlayout->addWidget(&subTitle);
     hlayout->addWidget(&toggleBtn);
+    subTitle.setFont(font);
+    subTitle.setAlignment(Qt::AlignCenter);
     subTitle.setVisible(false);
     toggleBtn.setFont(font);
     toggleBtn.setVisible(false);

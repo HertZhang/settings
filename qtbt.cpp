@@ -8,31 +8,31 @@
 qtBT::qtBT(QWidget *parent, QLabel *label, QPushButton *btn, bool on)
 {
     const QRect availableGeometry = QApplication::desktop()->availableGeometry(parent);
-     resize(availableGeometry.width(), availableGeometry.height());
+    resize(availableGeometry.width(), availableGeometry.height());
 
-     QFont font;
-     font.setPixelSize(availableGeometry.height()/20);
+    QFont font;
+    font.setPixelSize(availableGeometry.height()/20);
 
-     if(label){
-         text = label;
-         updateConnectState();
-         text->setVisible(true);
-     }
-     if(btn){
-         switchBtn = btn;
-         switchBtn->setCheckable(true);
-         switchBtn->setVisible(true);
-         switchBtn->setStyleSheet("QPushButton{background-color:green;}");
-         switchBtn->setStyleSheet("QPushButton:checked{background-color:red;}");
-         if (on){
-             switchBtn->setChecked(true);
-             switchBtn->setText("on");
-         } else {
-             switchBtn->setChecked(false);
-             switchBtn->setText("off");
-         }
-         connect(switchBtn, SIGNAL(clicked(bool)), this, SLOT(on_btnClicked()));
-     }
+    if(label){
+        text = label;
+        updateConnectState();
+        text->setVisible(true);
+    }
+    if(btn){
+        switchBtn = btn;
+        switchBtn->setCheckable(true);
+        switchBtn->setVisible(true);
+        switchBtn->setStyleSheet("QPushButton{background-color:green;}");
+        switchBtn->setStyleSheet("QPushButton:checked{background-color:red;}");
+        if (on){
+            switchBtn->setChecked(true);
+            switchBtn->setText("on");
+        } else {
+            switchBtn->setChecked(false);
+            switchBtn->setText("off");
+        }
+        connect(switchBtn, SIGNAL(clicked(bool)), this, SLOT(on_btnClicked()));
+    }
     setObjectName("BT");
     setFont(font);
     bsThread = new btScanThread();
@@ -42,7 +42,6 @@ qtBT::qtBT(QWidget *parent, QLabel *label, QPushButton *btn, bool on)
     show();
     if(on)
         turnOn();
-
 }
 
 qtBT::~qtBT()

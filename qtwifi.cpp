@@ -39,11 +39,10 @@ qtWifi::qtWifi(QWidget *parent, QLabel *label, QPushButton *btn, bool on): cnt(0
     }
     setObjectName("WiFi");
     setFont(font);
+    wifiThread = new wifiScanThread();
     connect(this, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(on_itemClicked(QListWidgetItem *)));
-    connect(&findTimer,&QTimer::timeout,this,&qtWifi::scan);
-    connect(&updateTimer,&QTimer::timeout,this,&qtWifi::updateConnectState);
-    updateTimer.setInterval(1000);
-    updateTimer.start();
+    connect(wifiThread, SIGNAL(resultReady(QStringList)), this, SLOT(handleResults(QStringList)));
+    connect(wifiThread, SIGNAL(finished()), wifiThread, SLOT(deleteLater()));
     show();
     if(on)
         turnOn();
@@ -51,12 +50,18 @@ qtWifi::qtWifi(QWidget *parent, QLabel *label, QPushButton *btn, bool on): cnt(0
 
 qtWifi::~qtWifi()
 {
-    findTimer.stop();
-    updateTimer.stop();
     QKeyBoard *qkb = QKeyBoard::getInstance();
     delete qkb;
     inputDialog *dialog = inputDialog::getInstance(this);
     delete dialog;
+    if(wifiThread){
+        if(wifiThread->isRunning()){
+            wifiThread->terminate();
+            wifiThread->wait();
+        }
+        delete wifiThread;
+        wifiThread = nullptr;
+    }
     if(switchBtn){
         switchBtn->setVisible(false);
     }
@@ -84,8 +89,7 @@ void qtWifi::turnOn()
         p.start("ifconfig wlan0 up");
         p.waitForStarted();
         p.waitForFinished();
-        findTimer.setInterval(100);
-        findTimer.start();
+        wifiThread->start();
     } else {
         QStringList list;
         list << "wifi1" << "wifi2" << "wifi3" << "wifi4" << "wifi5" << "wifi6" << "wifi7";
@@ -132,33 +136,6 @@ void qtWifi::updateConnectState()
     }
 }
 
-void qtWifi::scan()
-{
-    QProcess p;
-    QStringList arguments;
-
-    updateConnectState();
-    findTimer.setInterval(30000);
-    arguments << "-c" << "iw dev wlan0 scan | grep SSID";
-    p.start("sh", arguments);
-    p.waitForStarted();
-    p.waitForFinished();
-
-    QTextStream qts(p.readAllStandardOutput());
-    QString line;
-    QStringList list;
-
-    do{
-        line = qts.readLine();
-        cnt++;
-        line = line.mid(7);
-        list << line;
-    }while (! line.isNull());
-
-    clear();
-    addItems(list);
-}
-
 void qtWifi::on_btnClicked()
 {
     if(switchBtn){
@@ -177,7 +154,6 @@ void qtWifi::on_itemClicked(QListWidgetItem *item)
     QKeyBoard::getInstance();
     inputDialog *dialog = inputDialog::getInstance(this);
 
-    findTimer.stop();
     dialog->setText("Connect", "Cancel", "Password of " + item->text());
     int result = dialog->exec();
     if(result){
@@ -192,6 +168,35 @@ void qtWifi::on_itemClicked(QListWidgetItem *item)
 //        p.start("sh", arguments);
         p.waitForStarted();
         p.waitForFinished();
+        updateConnectState();
     }
-    findTimer.start();
+}
+
+void qtWifi::handleResults(const QStringList &list)
+{
+    clear();
+    addItems(list);
+    updateConnectState();
+}
+
+void wifiScanThread::run() {
+    QProcess p;
+    while(1){
+        QStringList arguments;
+        arguments << "-c" << "iw dev wlan0 scan | grep SSID";
+        p.start("sh", arguments);
+        p.waitForStarted();
+        p.waitForFinished();
+        QTextStream result(p.readAllStandardOutput());
+        QString line;
+        QStringList list, sl;
+        do{
+            line = result.readLine();
+            line = line.mid(7);
+//            qDebug() << line;
+            list << line;
+        }while (! line.isNull());
+        emit resultReady(list);
+        sleep(10000);
+    }
 }
