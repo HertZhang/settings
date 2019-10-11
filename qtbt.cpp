@@ -77,11 +77,8 @@ bool qtBT::isOn()
 
 void qtBT::turnOn()
 {
-    if(QFile::exists("/userdata") && QFile::exists("/usr/bin/bt_pcba_test")){
+    if(QFile::exists("/userdata")){
         QProcess p;
-        p.start("/usr/bin/bt_pcba_test");
-        p.waitForStarted();
-        p.waitForFinished();
         p.start("hciconfig hci0 up");
         p.waitForStarted();
         p.waitForFinished();
