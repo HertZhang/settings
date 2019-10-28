@@ -9,6 +9,14 @@
 #include <QThread>
 #include <QTimer>
 
+class wifiStatusThread : public QThread
+{
+    Q_OBJECT
+    void run();
+signals:
+    void updateText(QString t);
+};
+
 class wifiScanThread : public QThread
 {
     Q_OBJECT
@@ -28,15 +36,16 @@ public:
     bool isOn();
     void turnOn();
     void turnOff();
-    void updateConnectState();
 public slots:
+    void updateText(QString t);
     void on_btnClicked();
     void on_itemClicked(QListWidgetItem *item);
     void handleResults(const QStringList &list);
 private:
     QLabel *text;
     QPushButton *switchBtn;
-    wifiScanThread *wifiThread;
+    wifiScanThread *scanThread;
+    wifiStatusThread *statusThread;
 };
 
 #endif // QTWIFI_H

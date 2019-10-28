@@ -35,15 +35,20 @@ qtWifi::qtWifi(QWidget *parent, QLabel *label, QPushButton *btn, bool on): cnt(0
 
     if(label){
         text = label;
-        updateConnectState();
+        text->setText("");
         text->setVisible(true);
+    }else {
+        text = nullptr;
     }
     setObjectName("WiFi");
     setFont(font);
-    wifiThread = new wifiScanThread();
+    scanThread = new wifiScanThread();
+    connect(scanThread, SIGNAL(resultReady(QStringList)), this, SLOT(handleResults(QStringList)));
+    connect(scanThread, SIGNAL(finished()), scanThread, SLOT(deleteLater()));
+    statusThread = new wifiStatusThread();
+    connect(statusThread, SIGNAL(updateText(QString)), this, SLOT(updateText(QString)));
+    connect(statusThread, SIGNAL(finished()), statusThread, SLOT(deleteLater()));
     connect(this, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(on_itemClicked(QListWidgetItem *)));
-    connect(wifiThread, SIGNAL(resultReady(QStringList)), this, SLOT(handleResults(QStringList)));
-    connect(wifiThread, SIGNAL(finished()), wifiThread, SLOT(deleteLater()));
     show();
     if(on)
         turnOn();
@@ -55,13 +60,21 @@ qtWifi::~qtWifi()
     delete qkb;
     inputDialog *dialog = inputDialog::getInstance(this);
     delete dialog;
-    if(wifiThread){
-        if(wifiThread->isRunning()){
-            wifiThread->terminate();
-            wifiThread->wait();
+    if(scanThread){
+        if(scanThread->isRunning()){
+            scanThread->terminate();
+            scanThread->wait();
         }
-        delete wifiThread;
-        wifiThread = nullptr;
+        delete scanThread;
+        scanThread = nullptr;
+    }
+    if(statusThread){
+        if(statusThread->isRunning()){
+            statusThread->terminate();
+            statusThread->wait();
+        }
+        delete statusThread;
+        statusThread = nullptr;
     }
     if(switchBtn){
         switchBtn->setVisible(false);
@@ -90,11 +103,15 @@ void qtWifi::turnOn()
         p.start("ifconfig wlan0 up");
         p.waitForStarted();
         p.waitForFinished();
-        wifiThread->start();
+        scanThread->start();
+        statusThread->start();
     } else {
         QStringList list;
         list << "wifi1" << "wifi2" << "wifi3" << "wifi4" << "wifi5" << "wifi6" << "wifi7";
         addItems(list);
+    }
+    if(text){
+        text->setVisible(true);
     }
 }
 
@@ -107,38 +124,14 @@ void qtWifi::turnOff()
         p.waitForFinished();
     }
     clear();
+    if(text){
+        text->setVisible(false);
+    }
 }
 
-void qtWifi::updateConnectState()
+void qtWifi::updateText(QString t)
 {
-    QProcess p;
-
-    p.start("wpa_cli -i wlan0 status");
-    p.waitForStarted();
-    p.waitForFinished();
-    QTextStream tt(p.readAllStandardOutput());
-    QString ll, ssid;
-    bool found = false;
-    do{
-        ll = tt.readLine();
-
-        if(!ll.compare("wpa_state=COMPLETED")){
-            found = true;
-        }
-        if(!ll.mid(0, 5).compare("ssid=")){
-            ssid = ll.mid(5, ll.count());
-        }
-    }while (! ll.isNull());
-
-    if(found){
-        text->setText(ssid + " Connected");
-    }else {
-        if(isOn()){
-            text->setText("Scaning");
-        }else {
-            text->setText("No Wifi Connected");
-        }
-    }
+    text->setText(t);
 }
 
 void qtWifi::on_btnClicked()
@@ -158,7 +151,7 @@ void qtWifi::on_itemClicked(QListWidgetItem *item)
 {
     QKeyBoard::getInstance();
     inputDialog *dialog = inputDialog::getInstance(this);
-
+    QString ssid = item->text();
     dialog->setText("Connect", "Cancel", "Password of " + item->text());
     int result = dialog->exec();
     if(result){
@@ -166,14 +159,13 @@ void qtWifi::on_itemClicked(QListWidgetItem *item)
         QProcess p;
         QStringList arguments;
 
-        QString ss = "wifi_start.sh " + item->text() + " " + str;
+        QString ss = "wifi_start.sh " + ssid + " " + str;
         qDebug() << ss;
         p.start(ss);
 //        arguments << "-c" << "wifi_start.sh " + item->text() + " " + str;
 //        p.start("sh", arguments);
         p.waitForStarted();
         p.waitForFinished();
-        updateConnectState();
     }
 }
 
@@ -181,7 +173,36 @@ void qtWifi::handleResults(const QStringList &list)
 {
     clear();
     addItems(list);
-    updateConnectState();
+}
+
+void wifiStatusThread::run() {
+    QProcess p;
+    while(1){
+//        qDebug() << "wifiStatusThread update";
+        p.start("wpa_cli -i wlan0 status");
+        p.waitForStarted();
+        p.waitForFinished();
+        QTextStream tt(p.readAllStandardOutput());
+        QString ll, ssid;
+        bool found = false;
+        do{
+            ll = tt.readLine();
+//            qDebug() << ll;
+            if(!ll.compare("wpa_state=COMPLETED")){
+                found = true;
+            }
+            if(!ll.mid(0, 5).compare("ssid=")){
+                ssid = ll.mid(5, ll.count());
+            }
+        }while (! ll.isNull());
+
+        if(found){
+            emit updateText(ssid + " Connected");
+        }else {
+            emit updateText("Scaning");
+        }
+        sleep(1);
+    }
 }
 
 void wifiScanThread::run() {
@@ -202,6 +223,6 @@ void wifiScanThread::run() {
             list << line;
         }while (! line.isNull());
         emit resultReady(list);
-        sleep(10000);
+        sleep(10);
     }
 }

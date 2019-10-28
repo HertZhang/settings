@@ -41,11 +41,13 @@ MainWindow::MainWindow(QWidget *parent)
     hlayout->addWidget(&title);
     hlayout->addWidget(&subTitle);
     hlayout->addWidget(&toggleBtn);
-    font.setPixelSize(12);
+    font.setPixelSize(pixmap.height()*1/3);
     subTitle.setFont(font);
     subTitle.setAlignment(Qt::AlignCenter);
     subTitle.setVisible(false);
+    font.setPixelSize(pixmap.height()/2);
     toggleBtn.setFont(font);
+    toggleBtn.setFixedSize(pixmap.width(), pixmap.height());
     toggleBtn.setVisible(false);
 
     font.setPixelSize(availableGeometry.height()/20);
