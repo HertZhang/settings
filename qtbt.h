@@ -75,6 +75,7 @@ public:
     static void source_connect_cb(void *userdata, const char *bd_addr, const char *name, const RK_BT_SOURCE_EVENT enEvent);
     static void scan_cb(const char *address,const char *name, unsigned int bt_class, int rssi);
     void open();
+    void close();
     bool isOn();
     void turnOn();
     void turnOff();

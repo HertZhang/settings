@@ -10,89 +10,89 @@
 qtBT* qtBT::_instance = nullptr;
 void qtBT::state_cb(RK_BT_STATE state)
 {
-        switch(state) {
-                case RK_BT_STATE_TURNING_ON:
-                        qDebug() << "RK_BT_STATE_TURNING_ON";
-                        break;
-                case RK_BT_STATE_ON:
-                        qDebug() << "RK_BT_STATE_ON";
-                        break;
-                case RK_BT_STATE_TURNING_OFF:
-                        qDebug() << "RK_BT_STATE_TURNING_OFF";
-                        break;
-                case RK_BT_STATE_OFF:
-                        qDebug() << "RK_BT_STATE_OFF";
-                        break;
-        }
+    switch(state) {
+            case RK_BT_STATE_TURNING_ON:
+                    qDebug() << "RK_BT_STATE_TURNING_ON";
+                    break;
+            case RK_BT_STATE_ON:
+                    qDebug() << "RK_BT_STATE_ON";
+                    break;
+            case RK_BT_STATE_TURNING_OFF:
+                    qDebug() << "RK_BT_STATE_TURNING_OFF";
+                    break;
+            case RK_BT_STATE_OFF:
+                    qDebug() << "RK_BT_STATE_OFF";
+                    break;
+    }
 }
 
 void qtBT::bond_cb(const char *bd_addr, const char *name, RK_BT_BOND_STATE state)
 {
-        switch(state) {
-                case RK_BT_BOND_STATE_NONE:
-                case RK_BT_BOND_STATE_BONDING:
-                    break;
-                case RK_BT_BOND_STATE_BONDED:
-                    qtBT *btlist = getInstance();
-                    qDebug() << "RK_BT_BOND_STATE_BONDED" << name << bd_addr;
-                    for(int i=0; i<btlist->count(); i++){
-                        QListWidgetItem *ii = btlist->item(i);
-                        QString str = ii->text();
-                        QStringList sl  = str.split(" ");
-                        QString addr = sl.at(1);
-                        QString name = sl.at(2);
-                        if(!addr.isEmpty() && !addr.compare(QString(bd_addr))){
-                            QString str = "Paired " + QString(bd_addr) + " " + QString(name);
-                            QListWidgetItem *iitem = btlist->takeItem(i);
-                            iitem->setText(str);
-                            btlist->insertItem(0, iitem);
-                            return;
-                        }
+    switch(state) {
+            case RK_BT_BOND_STATE_NONE:
+            case RK_BT_BOND_STATE_BONDING:
+                break;
+            case RK_BT_BOND_STATE_BONDED:
+                qtBT *btlist = getInstance();
+                qDebug() << "RK_BT_BOND_STATE_BONDED" << name << bd_addr;
+                for(int i=0; i<btlist->count(); i++){
+                    QListWidgetItem *ii = btlist->item(i);
+                    QString str = ii->text();
+                    QStringList sl  = str.split(" ");
+                    QString addr = sl.at(1);
+                    QString name = sl.at(2);
+                    if(!addr.isEmpty() && !addr.compare(QString(bd_addr))){
+                        QString str = "Paired " + QString(bd_addr) + " " + QString(name);
+                        QListWidgetItem *iitem = btlist->takeItem(i);
+                        iitem->setText(str);
+                        btlist->insertItem(0, iitem);
+                        return;
                     }
+                }
 
-                    break;
-        }
+                break;
+    }
 }
 
 void qtBT::scan_status_cb(RK_BT_DISCOVERY_STATE status)
 {
-        switch(status) {
-                case RK_BT_DISC_STARTED:
-                case RK_BT_DISC_START_FAILED:
-                case RK_BT_DISC_STOPPED_BY_USER:
-                        break;
-                case RK_BT_DISC_STOPPED_AUTO:
-                        #ifdef RKDEVICEIO
-                        rk_bt_start_discovery(1000);
-                        #endif
-                        break;
+    switch(status) {
+            case RK_BT_DISC_STARTED:
+            case RK_BT_DISC_START_FAILED:
+            case RK_BT_DISC_STOPPED_BY_USER:
+                    break;
+            case RK_BT_DISC_STOPPED_AUTO:
+                    #ifdef RKDEVICEIO
+                    rk_bt_start_discovery(1000);
+                    #endif
+                    break;
 
-        }
+    }
 }
 
 void qtBT::source_connect_cb(void *userdata, const char *bd_addr, const char *name, const RK_BT_SOURCE_EVENT enEvent)
 {
-        switch(enEvent)
-        {
-                case BT_SOURCE_EVENT_CONNECT_FAILED:
-                        qDebug() << "BT_SOURCE_EVENT_CONNECT_FAILED" << name << bd_addr;
-                        break;
-                case BT_SOURCE_EVENT_CONNECTED:
-                        qDebug() << "BT_SOURCE_EVENT_CONNECTED" << name << bd_addr;
-                        break;
-                case BT_SOURCE_EVENT_DISCONNECTED:
-                        qDebug() << "BT_SOURCE_EVENT_DISCONNECTED" << name << bd_addr;
-                        break;
-                case BT_SOURCE_EVENT_RC_PLAY:
-                case BT_SOURCE_EVENT_RC_STOP:
-                case BT_SOURCE_EVENT_RC_PAUSE:
-                case BT_SOURCE_EVENT_RC_FORWARD:
-                case BT_SOURCE_EVENT_RC_BACKWARD:
-                case BT_SOURCE_EVENT_RC_VOL_UP:
-                case BT_SOURCE_EVENT_RC_VOL_DOWN:
-                        qDebug() << "BT_SOURCE_EVENT_RC: " << BT_SOURCE_EVENT_RC_VOL_DOWN << name << bd_addr;
-                        break;
-        }
+    switch(enEvent)
+    {
+            case BT_SOURCE_EVENT_CONNECT_FAILED:
+                    qDebug() << "BT_SOURCE_EVENT_CONNECT_FAILED" << name << bd_addr;
+                    break;
+            case BT_SOURCE_EVENT_CONNECTED:
+                    qDebug() << "BT_SOURCE_EVENT_CONNECTED" << name << bd_addr;
+                    break;
+            case BT_SOURCE_EVENT_DISCONNECTED:
+                    qDebug() << "BT_SOURCE_EVENT_DISCONNECTED" << name << bd_addr;
+                    break;
+            case BT_SOURCE_EVENT_RC_PLAY:
+            case BT_SOURCE_EVENT_RC_STOP:
+            case BT_SOURCE_EVENT_RC_PAUSE:
+            case BT_SOURCE_EVENT_RC_FORWARD:
+            case BT_SOURCE_EVENT_RC_BACKWARD:
+            case BT_SOURCE_EVENT_RC_VOL_UP:
+            case BT_SOURCE_EVENT_RC_VOL_DOWN:
+                    qDebug() << "BT_SOURCE_EVENT_RC: " << BT_SOURCE_EVENT_RC_VOL_DOWN << name << bd_addr;
+                    break;
+    }
 }
 
 
@@ -164,6 +164,15 @@ void qtBT::open()
 #endif
 }
 
+void qtBT::close()
+{
+    qDebug() << "bt close";
+#ifdef RKDEVICEIO
+    rk_bt_cancel_discovery();
+    rk_bt_deinit();
+#endif
+}
+
 qtBT::qtBT(QWidget *parent, QLabel *label, QPushButton *btn, bool on)
 {
     const QRect availableGeometry = QApplication::desktop()->availableGeometry(parent);
@@ -229,7 +238,7 @@ bool qtBT::isOn()
 void qtBT::turnOn()
 {
     if(QFile::exists("/userdata")){
-    open();
+        open();
     } else {
         QStringList list;
         list << "bt1" << "bt2" << "bt3" << "bt4" << "bt5" << "bt6" << "bt7";
@@ -240,7 +249,7 @@ void qtBT::turnOn()
 void qtBT::turnOff()
 {
     if(QFile::exists("/userdata")){
-
+        close();
     }
     clear();
 }
