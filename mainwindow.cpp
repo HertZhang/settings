@@ -204,6 +204,8 @@ void MainWindow::on_returnClicked()
         }else if(bt){
             stack.removeWidget(bt);
             isBtOn = bt->isOn();
+            delete bt;
+            bt = nullptr;
         }else if(update){
             stack.removeWidget(update);
             delete update;

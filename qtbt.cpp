@@ -197,11 +197,6 @@ qtBT::qtBT(QWidget *parent, QLabel *label, QPushButton *btn, bool on)
         connect(switchBtn, SIGNAL(clicked(bool)), this, SLOT(on_btnClicked()));
     }
 
-    if(label){
-        text = label;
-        text->setVisible(true);
-        updateConnectState();
-    }
     setObjectName("BT");
     setFont(font);
     connect(this, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(on_itemClicked(QListWidgetItem *)));
@@ -218,9 +213,7 @@ qtBT::~qtBT()
     if(switchBtn){
         switchBtn->setVisible(false);
     }
-    if(text){
-        text->setVisible(false);
-    }
+    _instance = nullptr;
 }
 
 bool qtBT::isOn()
@@ -252,13 +245,6 @@ void qtBT::turnOff()
         close();
     }
     clear();
-}
-
-void qtBT::updateConnectState()
-{
-    if(isOn()){
-        text->setText("Scaning");
-    }
 }
 
 void qtBT::on_btnClicked()

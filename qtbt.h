@@ -79,7 +79,6 @@ public:
     bool isOn();
     void turnOn();
     void turnOff();
-    void updateConnectState();
 
 public slots:
     void on_btnClicked();
